@@ -2,9 +2,9 @@
 GPU=0;                    # gpu to use
 SEED=42;                  # randomness seed for sampling
 CHANNELS=64;              # number of model base channels (we use 64 for all experiments)
-MODE='train';             # train vs sample
-DATASET='brats';          # brats or lidc-idri
-MODEL='ours_unet_128';    # 'ours_unet_256', 'ours_wnet_128', 'ours_wnet_256'
+MODE='sample';            # train vs sample
+DATASET='lidc-idri';      # brats or lidc-idri
+MODEL='ours_unet_128';    # 'ours_unet_128', 'ours_unet_256', 'ours_wnet_128', 'ours_wnet_256'
 
 # settings for sampling/inference
 ITERATIONS=0;             # training iteration (as a multiple of 1k) checkpoint to use for sampling
@@ -110,7 +110,7 @@ SAMPLE="
 --model_path=./${RUN_DIR}/checkpoints/${DATASET}_${ITERATIONS}000.pt
 --devices=${GPU}
 --output_dir=./results/${RUN_DIR}/${DATASET}_${MODEL}_${ITERATIONS}000/
---num_samples=1000
+--num_samples=10
 --use_ddim=False
 --sampling_steps=${SAMPLING_STEPS}
 --clip_denoised=True
@@ -118,7 +118,7 @@ SAMPLE="
 
 # run the python scripts
 if [[ $MODE == 'train' ]]; then
-  python scripts/generation_train.py $TRAIN $COMMON;
+  uv run scripts/generation_train.py $TRAIN $COMMON;
 else
-  python scripts/generation_sample.py $SAMPLE $COMMON;
+  uv run scripts/generation_sample.py $SAMPLE $COMMON;
 fi
